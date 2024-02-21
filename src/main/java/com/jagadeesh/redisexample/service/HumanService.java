@@ -6,7 +6,10 @@ import com.jagadeesh.redisexample.exception.HumanNotFoundException;
 import com.jagadeesh.redisexample.repository.HumanRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +38,7 @@ public class HumanService {
         return repo.findAllByName(name);
     }
 
-    @Cacheable(value = "humans", key = "#id")
+    @Cacheable(value = "humans",key = "#id")
     public Human getById(int id) throws HumanNotFoundException {
         Human human = new Human();
         log.info("Getting the data from DB: " + id);
@@ -45,6 +48,10 @@ public class HumanService {
         return human;
     }
 
+//    @CachePut(value = "humans",key = "#human.id")
+    @Caching(put = {
+            @CachePut(value = "humans",key = "#human.id"),
+    })
     public Human updateHuman(Human human) {
         Human newHuman = repo.findById(human.getId())
                 .orElseThrow(() -> new HumanNotFoundException("No Human available with Id:" + human.getId()));
@@ -52,4 +59,13 @@ public class HumanService {
         return repo.save(newHuman);
     }
 
+//    @CacheEvict(value = "humans",key = "#id")
+    @Caching(evict = {
+            @CacheEvict(value = "humans",key = "#human.id"),
+    })
+    public Human deleteHuman(Human human) {
+        log.info("Deleting the Human with Id:" + human.getId());
+        repo.delete(human);
+        return human ;
+    }
 }
