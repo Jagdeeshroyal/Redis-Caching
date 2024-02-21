@@ -48,10 +48,7 @@ public class HumanService {
         return human;
     }
 
-//    @CachePut(value = "humans",key = "#human.id")
-    @Caching(put = {
-            @CachePut(value = "humans",key = "#human.id"),
-    })
+    @CachePut(value = "humans",key = "#human.id")
     public Human updateHuman(Human human) {
         Human newHuman = repo.findById(human.getId())
                 .orElseThrow(() -> new HumanNotFoundException("No Human available with Id:" + human.getId()));
@@ -59,10 +56,7 @@ public class HumanService {
         return repo.save(newHuman);
     }
 
-//    @CacheEvict(value = "humans",key = "#id")
-    @Caching(evict = {
-            @CacheEvict(value = "humans",key = "#human.id"),
-    })
+    @CacheEvict(value = "humans",key = "#id")
     public Human deleteHuman(Human human) {
         log.info("Deleting the Human with Id:" + human.getId());
         repo.delete(human);

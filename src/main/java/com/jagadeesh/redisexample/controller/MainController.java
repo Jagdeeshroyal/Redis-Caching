@@ -53,10 +53,12 @@ public class MainController {
         return humans;
     }
 
+
     @PutMapping()
     public Human updateHuman(@RequestBody Human human) {
         return service.updateHuman(human);
     }
+
 
     @DeleteMapping({"delete/{id}"})
     public Human deleteHuman(@PathVariable int id) {
