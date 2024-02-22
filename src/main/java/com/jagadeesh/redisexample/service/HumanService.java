@@ -4,6 +4,7 @@ import com.jagadeesh.redisexample.entity.Human;
 import com.jagadeesh.redisexample.exception.HumanNotFoundByIdException;
 import com.jagadeesh.redisexample.exception.HumanNotFoundException;
 import com.jagadeesh.redisexample.repository.HumanRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,9 +33,12 @@ public class HumanService {
 
     public List<Human> getAll() {
         return repo.findAll();
+
     }
 
+    @Transactional
     public List<Human> getByName(String name) {
+        repo.getHumanWithName(name).stream().forEach(System.out::println);//calling the procedure
         return repo.findAllByName(name);
     }
 
